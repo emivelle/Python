@@ -1,5 +1,3 @@
-import base64
-
 def fixed_xor(hex1, hex2):
     b1 = bytes.fromhex(hex1)
     b2 = bytes.fromhex(hex2)
