@@ -1,0 +1,45 @@
+def xor_with_key(cipher_bytes, key):
+    return ''.join(chr(b ^ key) for b in cipher_bytes)
+
+def simple_score(text):
+    common = 'etaoinshrdlu '
+    score = 0
+    for c in text.lower():
+        if c in common:
+            score += 1
+        elif 32 <= ord(c) <= 126:
+            score += 0.1 
+        else:
+            score -= 1 
+    return score
+
+def detect_xor_line(filename):
+    best_score = float('-inf')
+    best_line = None
+    best_text = ""
+    best_key = None
+
+    with open(filename, 'r') as f:
+        for line_number, hex_line in enumerate(f):
+            hex_line = hex_line.strip()
+            try:
+                cipher_bytes = bytes.fromhex(hex_line)
+            except ValueError:
+                continue
+
+            for key in range(256):
+                decrypted = xor_with_key(cipher_bytes, key)
+                score = simple_score(decrypted)
+
+                if score > best_score:
+                    best_score = score
+                    best_line = line_number + 1
+                    best_text = decrypted
+                    best_key = key
+
+    print(f"Ligne : {best_line}")
+    print(f"Clé : {chr(best_key)} (0x{best_key:02x})")
+    print(f"Texte : {best_text}")
+
+if __name__ == "__main__":
+    detect_xor_line("data.txt")
