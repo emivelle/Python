@@ -9,9 +9,9 @@ def oracle(data):
     data = pad(os.urandom(random.randint(5,10)) + data + os.urandom(random.randint(5,10)))
     if random.randint(0,1):
         iv = os.urandom(16)
-        return Cipher(algorithms.AES(k), modes.CBC(iv)).encryptor().update(data)
+        return Cipher(algorithms.AES(k), modes.CBC(iv)).encryptor().update(data), "CBC"
     else:
-        return Cipher(algorithms.AES(k), modes.ECB()).encryptor().update(data)
+        return Cipher(algorithms.AES(k), modes.ECB()).encryptor().update(data), "ECB"
 
 def detect(ct):
     blocks = [ct[i:i+16] for i in range(0,len(ct),16)]
@@ -19,5 +19,5 @@ def detect(ct):
 
 for _ in range(10):
     pt = b"A"*64
-    ct = oracle(pt)
-    print(detect(ct))
+    ct, mode = oracle(pt)
+    print(f"Detecté: {detect(ct)} | Actuel: {mode}")
