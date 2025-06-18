@@ -3,7 +3,6 @@ from cryptography.hazmat.backends import default_backend
 from PIL import Image
 import os
 
-
 img = Image.open("image.png")
 img_bytes = img.tobytes()
 
@@ -13,7 +12,6 @@ padded = img_bytes + bytes([pad_len] * pad_len)
 key = b'ThisIsA16ByteKey'
 
 iv = os.urandom(16)
-
 
 cipher = Cipher(algorithms.AES(key), modes.CBC(iv), backend=default_backend())
 encryptor = cipher.encryptor()
